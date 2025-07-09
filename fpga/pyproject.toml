@@ -1,0 +1,9 @@
+[project]
+name = "worldcube-fpga"
+version = "1.0"
+requires-python = "~=3.13"
+dependencies = [
+    "amaranth==0.5.6",
+    "amaranth-boards@git+https://github.com/amaranth-lang/amaranth-boards@c26a72e59c786b38e0e989ae64c6c2560ca7c29c",
+    "python-dotenv"
+]

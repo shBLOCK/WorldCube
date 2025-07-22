@@ -1,11 +1,11 @@
 from amaranth import *
 from amaranth.build import Platform
-from amaranth.lib import wiring
 from amaranth.lib.memory import ReadPort, Memory
 from amaranth.lib.wiring import Component, In, Out
 
-from video_splitter.utils import ParallelVideoParams, ParallelVideoBus, RGB888, ParallelVideoBusInterface
+from video_splitter.utils import ParallelVideoParams, ParallelVideoBus, ParallelVideoBusInterface
 
+#TODO: this doesn't work with <=2 panels
 class SharedParallelBusMultiPanelDriver(Component):
     """Drive multiple panels that use the parallel bus (e.g. RGB888) at the same time, sharing their data and timing lines.
 
@@ -25,7 +25,7 @@ class SharedParallelBusMultiPanelDriver(Component):
         n_panels: int,
         video_params: ParallelVideoParams,
         line_read_ports: list[ReadPort],
-        line_read_offsets: list[int] | None,
+        line_read_offsets: list[int] | None = None,
         keep_clocking_when_paused: bool = False
     ):
         self.n_panels = n_panels
@@ -59,23 +59,6 @@ class SharedParallelBusMultiPanelDriver(Component):
         self._y = Signal(range(TOTAL_HEIGHT + 1), reset=TOTAL_HEIGHT)
         self._phase = Signal(range(self.n_panels * 2), reset=(self.n_panels * 2 - 1))
 
-        # Increment logic
-        is_phase_wrapping = Signal()
-        m.d.sync += self._phase.eq(self._phase + 1)
-        m.d.comb += is_phase_wrapping.eq(self._phase == (self.n_panels * 2 - 1))
-        with m.If(is_phase_wrapping): # phase wrap
-            m.d.sync += self._phase.eq(0)
-            with m.If(~self._x.all()):
-                m.d.sync += self._x.eq(self._x + 1)
-            with m.If(self._x >= TOTAL_WIDTH - 1): # x wrap
-                with m.If(self.line_trigger):
-                    m.d.sync += self._x.eq(0)
-                with m.If(~self._y.all()):
-                    m.d.sync += self._y.eq(self._y + 1)
-                with m.If(self._y >= TOTAL_HEIGHT - 1): # y wrap
-                    with m.If(self.frame_trigger):
-                        m.d.sync += self._y.eq(0)
-
         # Is in visible region
         is_pixel_area = Signal()
         x_is_pixel_area = Signal()
@@ -89,6 +72,33 @@ class SharedParallelBusMultiPanelDriver(Component):
             & (self._y < (self.vp.v_front_porch + self.vp.height))
         )
         m.d.comb += is_pixel_area.eq(x_is_pixel_area & y_is_pixel_area)
+
+        # Line & frame trigger set/reset latch
+        line_trigger_sr = Signal()
+        frame_trigger_sr = Signal()
+        with m.If(self.line_trigger):
+            m.d.sync += line_trigger_sr.eq(1)
+        with m.If(self.frame_trigger):
+            m.d.sync += frame_trigger_sr.eq(1)
+
+        # Increment logic
+        is_phase_wrapping = Signal()
+        m.d.sync += self._phase.eq(self._phase + 1)
+        m.d.comb += is_phase_wrapping.eq(self._phase == (self.n_panels * 2 - 1))
+        with m.If(is_phase_wrapping): # phase wrap
+            m.d.sync += self._phase.eq(0)
+            with m.If(~self._x.all()):
+                m.d.sync += self._x.eq(self._x + 1)
+            with m.If(self._x >= (TOTAL_WIDTH - 1)): # x wrap
+                with m.If(line_trigger_sr | ~y_is_pixel_area):
+                    m.d.sync += line_trigger_sr.eq(0)
+                    m.d.sync += self._x.eq(0)
+                    with m.If(~self._y.all()):
+                        m.d.sync += self._y.eq(self._y + 1)
+                    with m.If(self._y >= (TOTAL_HEIGHT - 1)): # y wrap
+                        with m.If(frame_trigger_sr):
+                            m.d.sync += frame_trigger_sr.eq(0)
+                            m.d.sync += self._y.eq(0)
 
         # Is in valid area (not in valid area indicates "waiting for line/frame trigger")
         is_valid_area = Signal()

@@ -13,13 +13,27 @@ class SwappableDoubleBufferMemory(Component):
     write_a: WritePort
     write_b: WritePort
 
-    def __init__(self, shape, depth: int):
+    def __init__(
+        self,
+        shape,
+        depth: int,
+        *,
+        mem_args: dict | None = None,
+        read_port_args: dict | None = None,
+        write_port_args: dict | None = None
+    ):
         self.shape = shape
         self.depth = depth
 
-        self.memories = Array([Memory(shape=shape, depth=depth, init=[]) for _ in range(2)])
-        self._read_ports = Array([mem.read_port() for mem in self.memories])
-        self._write_ports = Array([mem.write_port() for mem in self.memories])
+        if mem_args is None:
+            mem_args = {}
+        if read_port_args is None:
+            read_port_args = {}
+        if write_port_args is None:
+            write_port_args = {}
+        self.memories = Array([Memory(shape=shape, depth=depth, init=[], **mem_args) for _ in range(2)])
+        self._read_ports = Array([mem.read_port(**read_port_args) for mem in self.memories])
+        self._write_ports = Array([mem.write_port(**write_port_args) for mem in self.memories])
 
         self._state = Signal(reset=0)
 

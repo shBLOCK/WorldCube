@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://i6wdj58djpb1"]
+
+[ext_resource type="Script" uid="uid://df4q7t0qjwdd" path="res://src/viewport_3d_container.gd" id="1_4oyl4"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_4oyl4"]
+
+[node name="Viewport3DContainer" type="TextureRect"]
+texture = SubResource("ViewportTexture_4oyl4")
+expand_mode = 1
+script = ExtResource("1_4oyl4")

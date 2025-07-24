@@ -1,0 +1,74 @@
+[gd_scene load_steps=11 format=3 uid="uid://yxa1b25ytnki"]
+
+[ext_resource type="Script" uid="uid://b0p2rg1uvgkxw" path="res://src/main.gd" id="1_eewff"]
+[ext_resource type="PackedScene" uid="uid://i6wdj58djpb1" path="res://src/viewport_3d_container.tscn" id="2_5q4o7"]
+[ext_resource type="PackedScene" uid="uid://dhmei6jrn1f8f" path="res://assets/tmp/susan.fbx" id="2_fyndt"]
+[ext_resource type="PackedScene" uid="uid://cl4bwijjge0hr" path="res://src/viewport_3d.tscn" id="3_3cfgd"]
+[ext_resource type="PackedScene" uid="uid://bluhfp2u1nism" path="res://assets/tmp/susan2.fbx" id="3_kmhfv"]
+[ext_resource type="ArrayMesh" uid="uid://b643gd7fxavi5" path="res://assets/tmp/susan3.obj" id="4_kmhfv"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_fyndt"]
+
+[sub_resource type="Sky" id="Sky_kmhfv"]
+sky_material = SubResource("PhysicalSkyMaterial_fyndt")
+
+[sub_resource type="Environment" id="Environment_5q4o7"]
+background_mode = 2
+sky = SubResource("Sky_kmhfv")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_fyndt"]
+viewport_path = NodePath("Viewport3D/SubViewport")
+
+[node name="Main" type="Node"]
+script = ExtResource("1_eewff")
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World"]
+environment = SubResource("Environment_5q4o7")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
+transform = Transform3D(-0.288419, 0.782291, -0.552119, 0.11574, 0.600878, 0.790917, 0.950483, 0.164213, -0.263847, 0, 0, 0)
+
+[node name="susan" parent="World" instance=ExtResource("2_fyndt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.08322)
+visible = false
+
+[node name="susan2" parent="World" instance=ExtResource("3_kmhfv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.083)
+visible = false
+
+[node name="Susan3" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.083)
+mesh = ExtResource("4_kmhfv")
+skeleton = NodePath("../..")
+
+[node name="Window" type="Window" parent="."]
+unique_name_in_owner = true
+initial_position = 2
+size = Vector2i(1920, 1200)
+
+[node name="Viewport3DContainer" parent="Window" instance=ExtResource("2_5q4o7")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_fyndt")
+stretch_mode = 2
+
+[node name="Viewport3D" parent="Window/Viewport3DContainer" instance=ExtResource("3_3cfgd")]
+unique_name_in_owner = true
+real_camera_pos = Vector3(0, 0, 1)
+resolution = Vector2i(1920, 1200)
+world = NodePath(".")
+
+[node name="SubViewport" parent="Window/Viewport3DContainer/Viewport3D" index="0"]
+size = Vector2i(1920, 1200)
+
+[node name="Camera3D" parent="Window/Viewport3DContainer/Viewport3D/SubViewport" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+size = 0.025
+frustum_offset = Vector2(0, 0)
+
+[editable path="Window/Viewport3DContainer/Viewport3D"]

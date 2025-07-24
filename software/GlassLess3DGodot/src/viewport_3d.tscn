@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://cl4bwijjge0hr"]
+
+[ext_resource type="Script" uid="uid://5jj8bj1nyoit" path="res://src/viewport_3d.gd" id="1_4eesi"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4eesi"]
+cull_mode = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_4eesi"]
+material = SubResource("StandardMaterial3D_4eesi")
+
+[node name="Viewport3D" type="Node3D"]
+script = ExtResource("1_4eesi")
+real_camera_pos = Vector3(0, 0, 0)
+resolution = Vector2i(0, 0)
+metadata/_edit_group_ = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+unique_name_in_owner = true
+size = Vector2i(2, 2)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+unique_name_in_owner = true
+projection = 2
+size = inf
+frustum_offset = Vector2(nan, nan)
+
+[node name="_EditorTools" type="Node3D" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="VirtualScreen" type="MeshInstance3D" parent="_EditorTools"]
+mesh = SubResource("QuadMesh_4eesi")

@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4wsqok1lyjyl"]
+
+[ext_resource type="Script" uid="uid://bqojqqusp4gvr" path="res://src/flashlight.gd" id="1_yxt3a"]
+[ext_resource type="PackedScene" uid="uid://b1iiw5d0bh8u5" path="res://assets/tmp/flashlightfbx.fbx" id="2_0rrp3"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0rrp3"]
+top_radius = 0.0
+bottom_radius = 8.81635
+height = 50.0
+
+[node name="Flashlight" type="Node3D"]
+script = ExtResource("1_yxt3a")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.13603)
+spot_range = 20.9466
+spot_angle = 27.4461
+
+[node name="LightCone" type="MeshInstance3D" parent="SpotLight3D"]
+transform = Transform3D(1, 0, 0, 0, 5.11946e-08, -1, 0, 0.390399, 1.31134e-07, 0, 0, -9.11158)
+visible = false
+mesh = SubResource("CylinderMesh_0rrp3")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+
+[node name="Body" parent="." instance=ExtResource("2_0rrp3")]
+transform = Transform3D(20, 0, 0, 0, -8.74228e-07, 20, 0, -20, -8.74228e-07, 0, 0, 0)

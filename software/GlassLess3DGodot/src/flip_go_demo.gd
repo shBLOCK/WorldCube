@@ -6,10 +6,6 @@ var right_eye_3d := Vector3.ZERO
 
 @onready var world_scene := $World
 
-@export var ball_scene: PackedScene
-@export var launch_velocity := Vector3(0, 0, 5)
-@export var spawn_interval := 0.1
-
 func _eye_tracking_conn_thread_main():
 	var json := JSON.new()
 	while true:
@@ -29,12 +25,6 @@ func _eye_tracking_conn_thread_main():
 
 func _ready() -> void:
 	_eye_tracking_conn_thread.start(_eye_tracking_conn_thread_main)
-	
-	var timer = Timer.new()
-	timer.wait_time = spawn_interval
-	timer.timeout.connect(_spawn_ball)
-	timer.autostart = true
-	add_child(timer)
 
 @onready var FG_A_VP := %FG_A_VP
 @onready var FG_B_VP := %FG_B_VP
@@ -72,14 +62,3 @@ func _process(delta: float) -> void:
 	FG_B_VP.position = FG_B_VP.real_position * FG_SCALE
 	FG_B_VP.size = FG_B_VP.real_size * FG_SCALE
 	FG_B_VP.quaternion = FG_B_VP.real_quaternion
-	
-func _spawn_ball():
-	var ball = ball_scene.instantiate()
-	world_scene.add_child(ball)
-	var spawn_position = FG_B_VP.position + FG_B_VP.real_quaternion * Vector3(0, 0, 2.0)
-	var target_pos = FG_A_VP.real_position
-	#var launch_direction = (target_pos - spawn_position).normalized()
-	var launch_direction = FG_B_VP.quaternion * Vector3(0, 0, 1)
-
-	ball.global_position = spawn_position
-	ball.linear_velocity = launch_direction * 15 + Vector3(0, 5, 0)

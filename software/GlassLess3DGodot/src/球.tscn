@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://rs4i3wlcq0j8"]
+
+[ext_resource type="ArrayMesh" uid="uid://b643gd7fxavi5" path="res://assets/tmp/susan3.obj" id="1_53jrw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_53jrw"]
+radius = 0.254946
+
+[node name="球" type="RigidBody3D"]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+mesh = ExtResource("1_53jrw")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_53jrw")

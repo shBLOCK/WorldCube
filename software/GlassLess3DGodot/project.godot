@@ -26,3 +26,7 @@ project/assembly_name="GlassLess3DGodot"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/script-ide/plugin.cfg")
+
+[physics]
+
+3d/default_gravity=98.0

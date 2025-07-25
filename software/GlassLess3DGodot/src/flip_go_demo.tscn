@@ -27,7 +27,7 @@ script = ExtResource("1_nlti7")
 [node name="World" type="Node3D" parent="."]
 
 [node name="Susan3" type="MeshInstance3D" parent="World"]
-transform = Transform3D(10.405, 0, 0, 0, 10.0949, 2.52143, 0, -2.52143, 10.0949, 0, 3.28979, -15.4421)
+transform = Transform3D(8, 0, 0, 0, 7.76156, 1.93862, 0, -1.93862, 7.76156, 0, 3.28979, -15.4421)
 ignore_occlusion_culling = true
 mesh = ExtResource("2_h7e3i")
 skeleton = NodePath("../..")

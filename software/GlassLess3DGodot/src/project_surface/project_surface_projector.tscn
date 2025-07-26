@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://vwkuqkda3468"]
+
+[ext_resource type="Script" uid="uid://bn2vba434s22k" path="res://src/project_surface/project_surface_projector.gd" id="1_yadbm"]
+[ext_resource type="PackedScene" uid="uid://k4r17y723dai" path="res://src/perspective_snap_target.tscn" id="2_h2g2g"]
+
+[node name="ProjectSurfaceProjector" type="SubViewport"]
+transparent_bg = true
+render_target_update_mode = 1
+script = ExtResource("1_yadbm")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+unique_name_in_owner = true
+cull_mask = 0
+
+[node name="PerspectiveSnapTarget" parent="Camera3D" instance=ExtResource("2_h2g2g")]

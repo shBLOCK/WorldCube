@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://5djpiqhmwjvr"]
+
+[ext_resource type="PackedScene" uid="uid://cecalru2ngs8b" path="res://src/perspective_splicing/perspective_splicing_container.tscn" id="1_o233u"]
+[ext_resource type="PackedScene" uid="uid://i4eddk3lgskc" path="res://src/perspective_splicing/perspective_splicing_part.tscn" id="2_1f6ow"]
+[ext_resource type="PackedScene" uid="uid://bs3lcffcckbih" path="res://assets/perspective_splicing/apple1.fbx" id="3_5s6aw"]
+[ext_resource type="PackedScene" uid="uid://cg0lo06tbf4hr" path="res://assets/perspective_splicing/apple3.fbx" id="4_qik6m"]
+
+[node name="PerspectiveSplicingTest" type="Node3D"]
+
+[node name="PerspectiveSplicingContainer" parent="." instance=ExtResource("1_o233u")]
+std_depth = 0.06
+
+[node name="Camera3D" parent="PerspectiveSplicingContainer" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
+
+[node name="PerspectiveSplicingPart" parent="PerspectiveSplicingContainer" instance=ExtResource("2_1f6ow")]
+transform = Transform3D(94.5833, 0, 0, 0, 94.5833, 0, 0, 0, 94.5833, 0, 0, -5.615)
+depth = 5.675
+
+[node name="apple1" parent="PerspectiveSplicingContainer/PerspectiveSplicingPart" instance=ExtResource("3_5s6aw")]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 0, 0, 0)
+
+[node name="PerspectiveSplicingPart2" parent="PerspectiveSplicingContainer" instance=ExtResource("2_1f6ow")]
+transform = Transform3D(47, 0, 0, 0, 47, 0, 0, 0, 47, 0, 0, -2.76)
+depth = 2.82
+
+[node name="apple3" parent="PerspectiveSplicingContainer/PerspectiveSplicingPart2" instance=ExtResource("4_qik6m")]
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 0.001, 0, 0)
+
+[editable path="PerspectiveSplicingContainer"]

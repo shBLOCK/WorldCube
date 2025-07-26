@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2csa80qd1j8b"]
+
+[ext_resource type="Script" uid="uid://dwx3rctcyi0jw" path="res://src/project_surface/project_surface_dest.gd" id="1_a40cy"]
+
+[node name="ProjectSurfaceDest" type="Node3D"]
+script = ExtResource("1_a40cy")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

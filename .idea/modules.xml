@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WorldCube.iml" filepath="$PROJECT_DIR$/WorldCube.iml" />
       <module fileurl="file://$PROJECT_DIR$/fpga/fpga.iml" filepath="$PROJECT_DIR$/fpga/fpga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/python_misc/python_misc.iml" filepath="$PROJECT_DIR$/python_misc/python_misc.iml" />
     </modules>
   </component>
 </project>

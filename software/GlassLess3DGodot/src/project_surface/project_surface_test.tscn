@@ -1,0 +1,69 @@
+[gd_scene load_steps=11 format=3 uid="uid://boswei03d8tt2"]
+
+[ext_resource type="PackedScene" uid="uid://vwkuqkda3468" path="res://src/project_surface/project_surface_projector.tscn" id="1_brqbx"]
+[ext_resource type="PackedScene" uid="uid://dsmfdftrv8c2p" path="res://src/render_layer_modifier.tscn" id="2_5nw4b"]
+[ext_resource type="PackedScene" uid="uid://bxm021h6pcet7" path="res://assets/tmp/flashlightfbx.fbx" id="2_jv00d"]
+[ext_resource type="PackedScene" uid="uid://c2csa80qd1j8b" path="res://src/project_surface/project_surface_dest.tscn" id="3_5nw4b"]
+[ext_resource type="Shader" uid="uid://cbbdeemxeq5jw" path="res://src/project_surface/dest_overlay.gdshader" id="4_jv00d"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_5nw4b"]
+
+[sub_resource type="Sky" id="Sky_0pidd"]
+sky_material = SubResource("PhysicalSkyMaterial_5nw4b")
+
+[sub_resource type="Environment" id="Environment_k1sub"]
+background_mode = 2
+sky = SubResource("Sky_0pidd")
+adjustment_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5nw4b"]
+render_priority = 0
+shader = ExtResource("4_jv00d")
+shader_parameter/projector_enabled = false
+shader_parameter/camera_inv_matrix_x = Vector3(0, 0, 0)
+shader_parameter/camera_inv_matrix_y = Vector3(0, 0, 0)
+shader_parameter/camera_inv_matrix_z = Vector3(0, 0, 0)
+shader_parameter/camera_inv_matrix_o = Vector3(0, 0, 0)
+shader_parameter/camera_half_size = Vector2(0, 0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_70bq3"]
+size = Vector3(10, 1, 10)
+
+[node name="ProjectSurfaceTest" type="Node3D"]
+
+[node name="ProjectSurfaceProjector" parent="." instance=ExtResource("1_brqbx")]
+size = Vector2i(2048, 2048)
+layers = 2
+
+[node name="Camera3D" parent="ProjectSurfaceProjector" index="0"]
+transform = Transform3D(0.95296, 0.16656, -0.253228, 0.00463148, 0.827374, 0.561632, 0.30306, -0.536386, 0.787683, 0.00631452, 1.33141, 0.961821)
+cull_mask = 2
+fov = 87.6
+
+[node name="RenderLayerModifier" parent="ProjectSurfaceProjector" instance=ExtResource("2_5nw4b")]
+layers = 2
+
+[node name="flashlightfbx" parent="ProjectSurfaceProjector/RenderLayerModifier" instance=ExtResource("2_jv00d")]
+transform = Transform3D(3.745, 0, 0, 0, 3.745, 0, 0, 0, 3.745, 0, 0.0742691, -0.0706947)
+
+[node name="WorldEnvironment2" type="WorldEnvironment" parent="ProjectSurfaceProjector"]
+environment = SubResource("Environment_k1sub")
+
+[node name="ProjectSurfaceDest" parent="." node_paths=PackedStringArray("projectors") instance=ExtResource("3_5nw4b")]
+projectors = [NodePath("../ProjectSurfaceProjector")]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="ProjectSurfaceDest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.508, -0.5, -3.918)
+material_overlay = SubResource("ShaderMaterial_5nw4b")
+mesh = SubResource("BoxMesh_70bq3")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="ProjectSurfaceDest"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.508, 0.720659, -1.34742)
+material_overlay = SubResource("ShaderMaterial_5nw4b")
+mesh = SubResource("BoxMesh_70bq3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.227727, -0.647144, 0.72756, -0.639063, 0.46442, 0.613117, -0.734669, -0.604581, -0.307805, 0, 0, 0)
+layers = 3
+
+[editable path="ProjectSurfaceProjector"]

@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cecalru2ngs8b"]
+
+[ext_resource type="Script" uid="uid://bix5tuyi8mwu7" path="res://src/perspective_splicing/perspective_splicing_container.gd" id="1_yln3v"]
+[ext_resource type="PackedScene" uid="uid://k4r17y723dai" path="res://src/perspective_snap_target.tscn" id="2_dg4ts"]
+
+[node name="PerspectiveSplicingContainer" type="Node3D"]
+script = ExtResource("1_yln3v")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="RotScaleMarker" type="Marker3D" parent="."]
+unique_name_in_owner = true
+
+[node name="PerspectiveSnapTarget" parent="." instance=ExtResource("2_dg4ts")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)

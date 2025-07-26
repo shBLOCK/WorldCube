@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://i4eddk3lgskc"]
+
+[ext_resource type="Script" uid="uid://c5sqxq1dydcr3" path="res://src/perspective_splicing/perspective_splicing_part.gd" id="1_jfpiv"]
+
+[node name="PerspectiveSplicingPart" type="Node3D"]
+script = ExtResource("1_jfpiv")

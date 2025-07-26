@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsmfdftrv8c2p"]
+
+[ext_resource type="Script" uid="uid://ch8xx0qgsy2ue" path="res://src/render_layer_modifier.gd" id="1_2y6sm"]
+
+[node name="RenderLayerModifier" type="Node3D"]
+script = ExtResource("1_2y6sm")
+
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="." to="." method="_on_child_exiting_tree"]

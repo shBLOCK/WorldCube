@@ -1,0 +1,16 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+"C1, C2, C3, C4, C5",1210,5,47uF 25V,C7432791
+J1,TE_1565917-4,1,ICESugar-Pro,
+J10,PinHeader_1x04_P2.54mm_Vertical,1,ADV7611_Init,
+J11,PinHeader_1x03_P2.54mm_Vertical,1,LCD_BL_DCDC,
+J12,PinHeader_1x03_P2.54mm_Vertical,1,3V3_DCDC,
+J14,PinSocket_2x15_P2.54mm_Horizontal,1,FPGA_GPIO,
+J15,BarrelJack_Horizontal,1,5V_IN,
+J2,PinHeader_2x20_P2.54mm_Vertical,1,VC-ADV7611,
+J4,PinSocket_1x07_P2.54mm_Vertical,1,MAX98357_Module,
+J7,Hirose_FH12-50S-0.5SH_1x50-1MP_P0.50mm_Horizontal,1,FPC_50Pin,C231436
+J8,PinHeader_1x08_P2.54mm_Vertical,1,Misc,
+J9,PinHeader_1x06_P2.54mm_Vertical,1,LCD_Ctrl,
+Q1,SOT-23,1,AO3400A,C20917
+R1,0603,1,100k,
+R2,0603,1,1M,

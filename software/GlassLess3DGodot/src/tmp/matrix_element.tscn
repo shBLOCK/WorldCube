@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cv8via5q0vw62"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+radius = 0.201

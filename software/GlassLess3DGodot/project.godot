@@ -15,6 +15,14 @@ run/main_scene="uid://c6aonmaoiqehi"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Utils="*res://src/utils.gd"
+
+[debug_draw_3d]
+
+settings/addon_root_folder="res://addons/debug_draw_3d"
+
 [display]
 
 window/subwindows/embed_subwindows=false
@@ -22,3 +30,25 @@ window/subwindows/embed_subwindows=false
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/script-ide/plugin.cfg")
+
+[global_group]
+
+PerspectiveSnapTargets=""
+
+[importer_defaults]
+
+wavefront_obj={
+&"generate_lods": false
+}
+scene={
+&"meshes/generate_lods": false
+}
+
+[layer_names]
+
+3d_render/layer_1="main"
+3d_render/layer_2="project_surface"
+
+[rendering]
+
+mesh_lod/lod_change/threshold_pixels=0.0

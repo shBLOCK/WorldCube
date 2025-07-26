@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ydh31icv8cds"]
+
+[ext_resource type="Script" uid="uid://cdxueam0wnfpx" path="res://src/glass_less_3d_camera_controller.gd" id="1_401sj"]
+
+[node name="GlassLess3DCameraController" type="Marker3D"]
+script = ExtResource("1_401sj")

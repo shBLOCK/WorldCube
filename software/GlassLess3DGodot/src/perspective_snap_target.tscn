@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://k4r17y723dai"]
+
+[ext_resource type="Script" uid="uid://cbuj7inhr6a0y" path="res://src/perspective_snap_target.gd" id="1_ox5uo"]
+
+[node name="PerspectiveSnapTarget" type="Marker3D" groups=["PerspectiveSnapTargets"]]
+script = ExtResource("1_ox5uo")
+range = Vector3(1, 1, 1)
+margin = null

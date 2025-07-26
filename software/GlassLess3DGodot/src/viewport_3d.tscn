@@ -10,13 +10,13 @@ material = SubResource("StandardMaterial3D_4eesi")
 
 [node name="Viewport3D" type="Node3D"]
 script = ExtResource("1_4eesi")
+real_quaternion = Quaternion(0, 0, 0, 1)
 real_camera_pos = Vector3(0, 0, 0)
-resolution = Vector2i(0, 0)
 metadata/_edit_group_ = true
 
 [node name="SubViewport" type="SubViewport" parent="."]
 unique_name_in_owner = true
-size = Vector2i(2, 2)
+mesh_lod_threshold = 0.0
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
 unique_name_in_owner = true

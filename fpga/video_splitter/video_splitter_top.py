@@ -50,6 +50,8 @@ class VideoSplitterTop(Elaboratable):
         for i, buf in enumerate(line_buffers):
             m.submodules[f"line_buffer_{i}"] = buf
             m.d.comb += buf.swap.eq(line_buffers_swap)
+            m.d.comb += buf.read_a.en.eq(0)
+            m.d.comb += buf.write_b.en.eq(0)
 
         m.submodules.panel_driver = panel_driver = DomainRenamer("video_out")(
             SharedParallelBusMultiPanelDriver(
@@ -68,12 +70,21 @@ class VideoSplitterTop(Elaboratable):
         # CDC line & frame trigger
         line_trigger = Signal()
         m.d.video_in += line_trigger.eq(0)
-        m.submodules.line_trigger_sync = AsyncFFSynchronizer(line_trigger, panel_driver.line_trigger,
-                                                             o_domain="video_out")
+        # m.submodules.line_trigger_sync = AsyncFFSynchronizer(line_trigger, panel_driver.line_trigger,
+        #                                                      o_domain="video_out")
+        m.submodules.line_trigger_sync = line_trigger_sync = PulseSynchronizer(i_domain="video_in",
+                                                                               o_domain="video_out")
+        m.d.comb += line_trigger_sync.i.eq(line_trigger)
+        m.d.comb += panel_driver.line_trigger.eq(line_trigger_sync.o)
+
         frame_trigger = Signal()
         m.d.video_in += frame_trigger.eq(0)
-        m.submodules.frame_trigger_sync = AsyncFFSynchronizer(frame_trigger, panel_driver.frame_trigger,
-                                                              o_domain="video_out")
+        # m.submodules.frame_trigger_sync = AsyncFFSynchronizer(frame_trigger, panel_driver.frame_trigger,
+        #                                                       o_domain="video_out")
+        m.submodules.frame_trigger_sync = frame_trigger_sync = PulseSynchronizer(i_domain="video_in",
+                                                                                 o_domain="video_out")
+        m.d.comb += frame_trigger_sync.i.eq(frame_trigger)
+        m.d.comb += panel_driver.frame_trigger.eq(frame_trigger_sync.o)
 
         ## Main Logic
 
@@ -121,9 +132,6 @@ class VideoSplitterTop(Elaboratable):
             m.d.video_in += y.eq(0)
             m.d.video_in += frame_trigger.eq(1)
 
-        m.domains.sync = cd_sync = ClockDomain()  # unused
-        m.d.comb += cd_sync.clk.eq(0)
-
         return m
 
 def _build_1():
@@ -166,17 +174,32 @@ def _build_1():
         "EHXPLLL",
         a_ICP_CURRENT="12",
         a_LPF_RESISTOR="8",
-        p_CLKI_DIV=5,
+        p_CLKI_DIV=1,
         p_CLKOP_ENABLE="ENABLED",
         p_CLKOP_DIV=3,
         p_CLKOP_CPHASE=1,
         p_CLKOP_FPHASE=0,
         p_FEEDBK_PATH="CLKOP",
-        p_CLKFB_DIV=24,
+        p_CLKFB_DIV=4,
         i_CLKI=platform.request("clk25").i,
         o_CLKOP=video_out_clk,
         i_CLKFB=video_out_clk
     )
+    # m.submodules.pll = Instance(  # 90MHz
+    #     "EHXPLLL",
+    #     a_ICP_CURRENT="12",
+    #     a_LPF_RESISTOR="8",
+    #     p_CLKI_DIV=5,
+    #     p_CLKOP_ENABLE="ENABLED",
+    #     p_CLKOP_DIV=3,
+    #     p_CLKOP_CPHASE=1,
+    #     p_CLKOP_FPHASE=0,
+    #     p_FEEDBK_PATH="CLKOP",
+    #     p_CLKFB_DIV=18,
+    #     i_CLKI=platform.request("clk25").i,
+    #     o_CLKOP=video_out_clk,
+    #     i_CLKFB=video_out_clk
+    # )
     m.submodules.top = VideoSplitterTop(
         video_params=ParallelVideoParams(
             RGB888,

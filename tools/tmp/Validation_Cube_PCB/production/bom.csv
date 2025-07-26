@@ -1,0 +1,5 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+"C1, C2, C3",0603,3,1uF,C15849
+J1,TE_4-1734839-0_1x40-1MP_P0.5mm_Horizontal,1,LCD,C262648
+"J2, J3, J4",TE_5-1734839-0_1x50-1MP_P0.5mm_Horizontal,3,FPC_50Pin,C262650
+R1,1206,1,100,C17901

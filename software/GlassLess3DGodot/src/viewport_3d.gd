@@ -10,7 +10,7 @@ var camera_pos: Vector3:
 	set(value):
 		%Camera3D.position = value
 @export var real_position := Vector3.ZERO
-@export var real_quaternion := Quaternion.IDENTITY
+@export var real_quaternion := Quaternion.from_euler(Vector3(1, 0, 0))
 @export var real_size := Vector2(1, 1)
 @export var real_camera_pos := Vector3(0, 0, 1)
 
@@ -19,6 +19,11 @@ var camera_pos: Vector3:
 @export var clip_at_screen_plane := false
 
 @export var resolution := Vector2i(512, 512)
+@export_flags_3d_render var render_layer_mask: int = 0xFFFFF:
+	get():
+		return %Camera3D.cull_mask
+	set(value):
+		%Camera3D.cull_mask = value
 
 @export_node_path("Node3D") var world: NodePath
 

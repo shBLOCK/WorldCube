@@ -3,3 +3,5 @@
 \#*\#
 *-cache
 *.bck
+*.log
+*.projinst.*

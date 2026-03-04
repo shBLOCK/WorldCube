@@ -1414,6 +1414,12 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "U1")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -1501,6 +1507,12 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "C2")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -1584,6 +1596,12 @@
 				)
 				(path "/2877f140-c3e7-4884-8361-576a04dfacc9/a2303a5f-938d-46ad-90cb-fd1a1178dbb9"
 					(reference "C21")
+					(unit 1)
+				)
+			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "C3")
 					(unit 1)
 				)
 			)
@@ -1674,6 +1692,12 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "FB2")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -1760,6 +1784,12 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "C4")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -1840,6 +1870,12 @@
 				)
 				(path "/2877f140-c3e7-4884-8361-576a04dfacc9/a2303a5f-938d-46ad-90cb-fd1a1178dbb9"
 					(reference "JP3")
+					(unit 1)
+				)
+			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "JP1")
 					(unit 1)
 				)
 			)
@@ -1930,6 +1966,12 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "C1")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -2017,6 +2059,12 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(reference "FB1")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(sheet
@@ -2096,6 +2144,11 @@
 					(page "10")
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(page "3")
+				)
+			)
 		)
 	)
 	(sheet
@@ -2173,6 +2226,11 @@
 				)
 				(path "/2877f140-c3e7-4884-8361-576a04dfacc9/1659066b-6285-4ee3-9bef-9817a6687465"
 					(page "7")
+				)
+			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873"
+					(page "2")
 				)
 			)
 		)

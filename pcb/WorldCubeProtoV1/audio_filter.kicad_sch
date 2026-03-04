@@ -451,6 +451,16 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/49cfe593-b06d-45f1-8958-a6d90d1541fa"
+					(reference "R4")
+					(unit 1)
+				)
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/df9721a8-9174-4573-b800-4058ff3053d7"
+					(reference "R2")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -554,6 +564,16 @@
 				)
 				(path "/2877f140-c3e7-4884-8361-576a04dfacc9/a2303a5f-938d-46ad-90cb-fd1a1178dbb9/df9721a8-9174-4573-b800-4058ff3053d7"
 					(reference "R11")
+					(unit 1)
+				)
+			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/49cfe593-b06d-45f1-8958-a6d90d1541fa"
+					(reference "R3")
+					(unit 1)
+				)
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/df9721a8-9174-4573-b800-4058ff3053d7"
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -664,6 +684,16 @@
 					(unit 1)
 				)
 			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/49cfe593-b06d-45f1-8958-a6d90d1541fa"
+					(reference "C7")
+					(unit 1)
+				)
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/df9721a8-9174-4573-b800-4058ff3053d7"
+					(reference "C5")
+					(unit 1)
+				)
+			)
 		)
 	)
 	(symbol
@@ -767,6 +797,16 @@
 				)
 				(path "/2877f140-c3e7-4884-8361-576a04dfacc9/a2303a5f-938d-46ad-90cb-fd1a1178dbb9/df9721a8-9174-4573-b800-4058ff3053d7"
 					(reference "C32")
+					(unit 1)
+				)
+			)
+			(project "audio_amp"
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/49cfe593-b06d-45f1-8958-a6d90d1541fa"
+					(reference "C8")
+					(unit 1)
+				)
+				(path "/2946b6c3-14b6-4098-b937-ca11a5c7b873/df9721a8-9174-4573-b800-4058ff3053d7"
+					(reference "C6")
 					(unit 1)
 				)
 			)

@@ -3,14 +3,16 @@ mod mediapipe;
 use crate::mediapipe::FaceLandmarkerResult;
 use pymeta::pymeta;
 use rerun::components::ViewCoordinates;
-use rerun::external::glam::{vec2, vec3, Vec2, Vec3Swizzles};
-use rerun::external::re_sdk_types::view_coordinates::ViewDir;
-use rerun::{Pinhole, Points2D, Points3D, Transform3D};
+use rerun::external::glam::{vec2, vec3, Vec2, Vec3Swizzles, Vec4Swizzles};
+use rerun::{Arrows3D, LineStrips3D, Pinhole, Points2D, Points3D, SpawnOptions, Transform3D};
 use std::sync::LazyLock;
 
 static REC: LazyLock<rerun::RecordingStream> = LazyLock::new(|| {
     rerun::RecordingStreamBuilder::new("tauri-media-pipe-face")
-        .spawn()
+        .spawn_opts(&SpawnOptions {
+            extra_args: vec!["--renderer".into(), "vulkan".into()], // for some reason rerun viewer doesn't work without this
+            ..Default::default()
+        })
         .unwrap()
 });
 
@@ -22,13 +24,14 @@ const HALF_FOV_Y: f32 = pymeta! {
     $half_vert_length = sin(atan(ar)) * half_diag_length;
     $atan(half_vert_length)$
 };
+const STD_EYE_DISTANCE: f32 = 6.0;
 
 #[tauri::command]
 async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
     let cam_half_size = vec2(HALF_FOV_Y.tan() * result.aspect_ratio, HALF_FOV_Y.tan());
 
     REC.log(
-        "camera",
+        "camera/camera",
         &Pinhole::from_focal_length_and_resolution(Vec2::ONE, cam_half_size * 2.0)
             .with_camera_xyz(ViewCoordinates::RUB)
             .with_image_plane_distance(1.0), // .with_image_from_camera(),
@@ -43,20 +46,20 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
     ];
 
     let get_eye_p_2d = |points: &[usize], name: &str, color: rerun::Color| -> Vec2 {
-        let p_scale = vec2(HALF_FOV_Y.tan() * result.aspect_ratio, HALF_FOV_Y.tan()) * 2.0;
+        let p_scale = vec2(-HALF_FOV_Y.tan() * result.aspect_ratio, HALF_FOV_Y.tan()) * 2.0;
         let points = points
             .iter()
             .map(|&i| (result.face_landmarks[i].pos.xy() - 0.5) * p_scale)
             .collect::<Vec<Vec2>>();
 
         REC.log(
-            "camera/2d",
+            "camera/camera/2d",
             &Transform3D::from_translation(cam_half_size.extend(0.0)),
         )
         .unwrap();
 
         REC.log(
-            format!("camera/2d/{name}/points"),
+            format!("camera/camera/2d/{name}/points"),
             &Points2D::new(points.iter().copied())
                 .with_colors([color])
                 .with_radii([0.003]),
@@ -66,7 +69,7 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
         let point = points.iter().sum::<Vec2>() / points.len() as f32;
 
         REC.log(
-            format!("camera/2d/{name}/point"),
+            format!("camera/camera/2d/{name}/point"),
             &Points2D::new([point])
                 .with_colors([color])
                 .with_radii([0.01]),
@@ -82,6 +85,81 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
         "right",
         rerun::Color::from_rgb(0, 255, 0),
     );
+
+    let left_eye_p = left_eye_p_2d.extend(-1.0);
+    let right_eye_p = right_eye_p_2d.extend(-1.0);
+    let head_right_dir = result.facial_transformation_matrix.x_axis.xyz() * vec3(1.0, 1.0, -1.0);
+
+    REC.log(
+        "camera/head_right_dir",
+        &Arrows3D::from_vectors([head_right_dir.normalize()]).with_radii([0.01]),
+    )
+    .unwrap();
+
+    // normal vector of the q plane (plane formed by origin, left_eye_p and right_eye_p)
+    let q_normal = left_eye_p.cross(right_eye_p).normalize();
+    // head_right_dir, projected into the p plane
+    let head_right_dir_q = (head_right_dir - q_normal * (head_right_dir.dot(q_normal))).normalize();
+    let head_forward = (head_right_dir_q.cross(q_normal)).normalize();
+
+    REC.log(
+        "camera/head_forward",
+        &Arrows3D::from_vectors([head_forward])
+            .with_colors([rerun::Color::from_rgb(0, 0, 255)])
+            .with_radii([0.01]),
+    )
+    .unwrap();
+
+    // left_eye_p & right_eye_p with standard depth (has projection length of one when projected onto head_forward)
+    let left_eye_p_std_depth = left_eye_p / (left_eye_p.dot(head_forward));
+    let right_eye_p_std_depth = right_eye_p / (right_eye_p.dot(head_forward));
+
+    REC.log(
+        "camera/eye_p_std_depth",
+        &Arrows3D::from_vectors([left_eye_p_std_depth, right_eye_p_std_depth])
+            .with_colors([
+                rerun::Color::from_rgb(255, 0, 0),
+                rerun::Color::from_rgb(0, 255, 0),
+            ])
+            .with_radii([0.01]),
+    )
+    .unwrap();
+
+    let eyes_p_distance_at_std_depth = left_eye_p_std_depth.distance(right_eye_p_std_depth);
+    REC.log(
+        "camera/eyes_p_distance_at_std_depth",
+        &LineStrips3D::new([[left_eye_p_std_depth, right_eye_p_std_depth]])
+            .with_radii([0.01])
+            .with_labels([format!("{eyes_p_distance_at_std_depth}")])
+            .with_colors([rerun::Color::from_rgb(255, 255, 255)]),
+    )
+    .unwrap();
+    let eye_depth_scale = STD_EYE_DISTANCE / eyes_p_distance_at_std_depth;
+
+    let left_eye_3d = left_eye_p_std_depth * eye_depth_scale;
+    let right_eye_3d = right_eye_p_std_depth * eye_depth_scale;
+
+    REC.log(
+        "camera/eye_3d_arrow",
+        &Arrows3D::from_vectors([left_eye_3d, right_eye_3d])
+            .with_colors([
+                rerun::Color::from_rgb(255, 0, 0),
+                rerun::Color::from_rgb(0, 255, 0),
+            ])
+            .with_radii([0.01]),
+    )
+    .unwrap();
+
+    REC.log(
+        "camera/eye_3d",
+        &Points3D::new([left_eye_3d, right_eye_3d])
+            .with_colors([
+                rerun::Color::from_rgb(255, 0, 0),
+                rerun::Color::from_rgb(0, 255, 0),
+            ])
+            .with_radii([0.05]),
+    )
+    .unwrap();
 }
 
 pub fn run() {

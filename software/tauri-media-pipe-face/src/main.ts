@@ -39,6 +39,7 @@ async function handleCameraFrame() {
     const visualHeight = visualWidth / aspectRatio;
     camera.style.width = canvas.style.width = `${visualWidth}px`;
     camera.style.height = canvas.style.height = `${visualHeight}px`;
+    camera.style.scale = canvas.style.scale = "-1 1";
     canvas.width = visualWidth;
     canvas.height = visualHeight
 

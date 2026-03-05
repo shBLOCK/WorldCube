@@ -34,8 +34,9 @@ let lastCameraTime = -1;
 let faceLandmarkerResult: FaceLandmarkerResult | null = null;
 
 async function handleCameraFrame() {
+    const aspectRatio = camera.videoWidth / camera.videoHeight;
     const visualWidth = 720;
-    const visualHeight = visualWidth * (camera.videoHeight / camera.videoWidth);
+    const visualHeight = visualWidth / aspectRatio;
     camera.style.width = canvas.style.width = `${visualWidth}px`;
     camera.style.height = canvas.style.height = `${visualHeight}px`;
     canvas.width = visualWidth;
@@ -50,6 +51,7 @@ async function handleCameraFrame() {
             //TODO: optimize, don't serialize to json
             const _ = invoke("handle_face_landmarker_result", {
                 result: {
+                    aspectRatio: aspectRatio,
                     faceLandmarks: faceLandmarkerResult.faceLandmarks[0],
                     facialTransformationMatrix: faceLandmarkerResult.facialTransformationMatrixes[0]
                 }

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="/src/styles.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Tauri App</title>
+    <script type="module" src="/src/main.ts" defer></script>
+</head>
+
+<body>
+<main class="container">
+    <div style="position: relative;">
+        <video id="camera" style="position: absolute;" autoplay playsinline></video>
+        <canvas id="canvas" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+    </div>
+</main>
+</body>
+</html>

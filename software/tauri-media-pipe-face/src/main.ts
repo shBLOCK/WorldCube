@@ -1,5 +1,6 @@
 // import {invoke} from "@tauri-apps/api/core";
 import {DrawingUtils, FaceLandmarker, FaceLandmarkerResult, FilesetResolver} from "@mediapipe/tasks-vision";
+import {invoke} from "@tauri-apps/api/core";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
@@ -44,6 +45,16 @@ async function handleCameraFrame() {
     if (lastCameraTime !== camera.currentTime) {
         lastCameraTime = camera.currentTime;
         faceLandmarkerResult = faceLandmarker.detectForVideo(camera, startMs);
+
+        if (faceLandmarkerResult.faceLandmarks.length >= 1) {
+            //TODO: optimize, don't serialize to json
+            const _ = invoke("handle_face_landmarker_result", {
+                result: {
+                    faceLandmarks: faceLandmarkerResult.faceLandmarks[0],
+                    facialTransformationMatrix: faceLandmarkerResult.facialTransformationMatrixes[0]
+                }
+            });
+        }
     }
 
     if (faceLandmarkerResult !== null && faceLandmarkerResult.faceLandmarks) {

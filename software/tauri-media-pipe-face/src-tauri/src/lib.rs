@@ -3,9 +3,13 @@ mod mediapipe;
 use crate::mediapipe::FaceLandmarkerResult;
 use pymeta::pymeta;
 use rerun::components::ViewCoordinates;
-use rerun::external::glam::{vec2, vec3, Vec2, Vec3Swizzles, Vec4Swizzles};
+use rerun::external::glam::{vec2, vec3, Vec2, Vec3, Vec3Swizzles, Vec4Swizzles};
 use rerun::{Arrows3D, LineStrips3D, Pinhole, Points2D, Points3D, SpawnOptions, Transform3D};
+use serde::ser::SerializeStruct;
+use serde::Serializer;
+use std::net::UdpSocket;
 use std::sync::LazyLock;
+// use tokio::net::UdpSocket;
 
 static REC: LazyLock<rerun::RecordingStream> = LazyLock::new(|| {
     rerun::RecordingStreamBuilder::new("tauri-media-pipe-face")
@@ -16,15 +20,26 @@ static REC: LazyLock<rerun::RecordingStream> = LazyLock::new(|| {
         .unwrap()
 });
 
+static SOCKET: LazyLock<UdpSocket> = LazyLock::new(|| {
+    let sock = UdpSocket::bind(("0.0.0.0", 8888)).unwrap();
+    sock.connect(("127.0.0.1", 30001)).unwrap();
+    sock
+});
+
 const HALF_FOV_Y: f32 = pymeta! {
     $from math import *;
-    $fov_diag = 87;
-    $ar = 1920 / 1080;
-    $half_diag_length = tan(radians(fov_diag / 2));
-    $half_vert_length = sin(atan(ar)) * half_diag_length;
-    $atan(half_vert_length)$
+
+    // $fov_diag = 87;
+
+    // $fov_diag = 110;
+    // $ar = 1920 / 1080;
+    // $half_diag_length = tan(radians(fov_diag / 2));
+    // $half_vert_length = sin(atan(ar)) * half_diag_length;
+    // $atan(half_vert_length)$
+
+    $radians(70 / 2)$
 };
-const STD_EYE_DISTANCE: f32 = 6.0;
+const STD_EYE_DISTANCE: f32 = 6.2;
 
 #[tauri::command]
 async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
@@ -46,7 +61,7 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
     ];
 
     let get_eye_p_2d = |points: &[usize], name: &str, color: rerun::Color| -> Vec2 {
-        let p_scale = vec2(-HALF_FOV_Y.tan() * result.aspect_ratio, HALF_FOV_Y.tan()) * 2.0;
+        let p_scale = vec2(-HALF_FOV_Y.tan() * result.aspect_ratio, -HALF_FOV_Y.tan()) * 2.0;
         let points = points
             .iter()
             .map(|&i| (result.face_landmarks[i].pos.xy() - 0.5) * p_scale)
@@ -54,7 +69,7 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
 
         REC.log(
             "camera/camera/2d",
-            &Transform3D::from_translation(cam_half_size.extend(0.0)),
+            &Transform3D::from_translation(cam_half_size.extend(0.0)).with_scale([1.0, -1.0, 1.0]),
         )
         .unwrap();
 
@@ -88,7 +103,7 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
 
     let left_eye_p = left_eye_p_2d.extend(-1.0);
     let right_eye_p = right_eye_p_2d.extend(-1.0);
-    let head_right_dir = result.facial_transformation_matrix.x_axis.xyz() * vec3(1.0, 1.0, -1.0);
+    let head_right_dir = result.facial_transformation_matrix.x_axis.xyz();
 
     REC.log(
         "camera/head_right_dir",
@@ -146,7 +161,7 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
                 rerun::Color::from_rgb(255, 0, 0),
                 rerun::Color::from_rgb(0, 255, 0),
             ])
-            .with_radii([0.01]),
+            .with_radii([0.03]),
     )
     .unwrap();
 
@@ -157,13 +172,39 @@ async fn handle_face_landmarker_result(result: FaceLandmarkerResult) {
                 rerun::Color::from_rgb(255, 0, 0),
                 rerun::Color::from_rgb(0, 255, 0),
             ])
-            .with_radii([0.05]),
+            .with_radii([0.25]),
     )
     .unwrap();
+
+    fn _serialize_vec3_obj<S: Serializer>(vec: &Vec3, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut s = serializer.serialize_struct("Vec3", 3)?;
+        s.serialize_field("x", &vec.x)?;
+        s.serialize_field("y", &vec.y)?;
+        s.serialize_field("z", &vec.z)?;
+        s.end()
+    }
+
+    #[derive(serde::Serialize)]
+    struct Packet {
+        #[serde(serialize_with = "_serialize_vec3_obj")]
+        left_eye_3d: Vec3,
+        #[serde(serialize_with = "_serialize_vec3_obj")]
+        right_eye_3d: Vec3,
+    }
+
+    let pkt = serde_json::to_string(&Packet {
+        left_eye_3d,
+        right_eye_3d,
+    }).unwrap();
+
+    // println!("{}", pkt);
+    SOCKET.send(pkt.as_bytes()).unwrap();
 }
 
 pub fn run() {
     LazyLock::force(&REC);
+    LazyLock::force(&SOCKET);
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![handle_face_landmarker_result])

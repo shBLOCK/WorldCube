@@ -23,7 +23,7 @@ let faceLandmarker = await loadFaceLandmarker();
 
 const camera = document.getElementById("camera") as HTMLVideoElement;
 
-navigator.mediaDevices.getUserMedia({video: true}).then(stream => {
+navigator.mediaDevices.getUserMedia({video: {width: 1920, height: 1080, frameRate: 60}}).then(stream => {
     camera.srcObject = stream;
     camera.addEventListener("loadeddata", handleCameraFrame)
 });
@@ -34,6 +34,7 @@ let lastCameraTime = -1;
 let faceLandmarkerResult: FaceLandmarkerResult | null = null;
 
 async function handleCameraFrame() {
+    console.log(camera.videoWidth, camera.videoHeight);
     const aspectRatio = camera.videoWidth / camera.videoHeight;
     const visualWidth = 720;
     const visualHeight = visualWidth / aspectRatio;
